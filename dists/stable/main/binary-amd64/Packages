@@ -1,0 +1,13 @@
+Package: coin
+Version: 2.0
+Architecture: amd64
+Maintainer: Rakshitha Banapur
+Filename: dists/stable/main/binary-amd64/coin_2.0.deb
+Size: 2064
+MD5sum: 90da989e10f2b0537e8f54c0a28adb54
+SHA1: 33ead8fc2a99c65c83f543685713b0cff28a5382
+SHA256: 02eeef5e42d3b0c8f42532790a116af3dc34468148351a78edad3571a7f297ce
+Section: utils
+Priority: optional
+Description: Simple coin toss utility with colored output and progress bar
+
