@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+
+# ---------------- COLORS ----------------
+GREEN="\033[32m"
+RED="\033[31m"
+YELLOW="\033[33m"
+CYAN="\033[36m"
+RESET="\033[0m"
+
+# ---------------- DEFAULTS ----------------
+num=1
+mode="normal"
+visual=true
+
+# ---------------- HELP ----------------
+show_help() {
+  cat <<EOF
+Usage: coin [-n NUM] [-c MODE] [--no-visual] [-h]
+
+Options:
+  -n NUM       Number of tosses (default: 1)
+  -c MODE      Output mode: normal | count
+  --no-visual  Disable colors and progress bar
+  -h           Show help
+EOF
+}
+
+# ---------------- ARG PARSING ----------------
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -n) num="$2"; shift 2 ;;
+    -c) mode="$2"; shift 2 ;;
+    --no-visual) visual=false; shift ;;
+    -h|--help) show_help; exit 0 ;;
+    *) echo "Unknown option: $1"; show_help; exit 1 ;;
+  esac
+done
+
+# ---------------- VALIDATE ----------------
+if ! [[ "$num" =~ ^[0-9]+$ ]] || [ "$num" -lt 1 ]; then
+  echo -e "${RED}Error:${RESET} -n NUM must be a positive integer."
+  exit 1
+fi
+num=$((num))  # ensure integer
+
+# ---------------- COUNTERS ----------------
+heads=0
+tails=0
+
+# ---------------- PROGRESS BAR FUNCTION ----------------
+progress_bar() {
+  local progress=$1
+  local total=$2
+  local width=30
+  local filled=$(( progress * width / total ))
+  local empty=$(( width - filled ))
+
+  printf "["
+  if [ "$visual" = true ]; then
+      printf "${CYAN}%0.s#" $(seq 1 $filled)
+      printf "%0.s-" $(seq 1 $empty)
+  else
+      printf "%0.s#" $(seq 1 $filled)
+      printf "%0.s-" $(seq 1 $empty)
+  fi
+  printf "] %d/%d\n" "$progress" "$total"
+}
+
+# ---------------- MAIN LOOP ----------------
+for ((i=1; i<=num; i++)); do
+  # Flip coin using shuf for reliable randomness
+  result=$(shuf -e HEADS TAILS -n 1)
+
+  if [ "$result" = "HEADS" ]; then
+    ((heads++))
+    if [ "$mode" = "normal" ]; then
+      if [ "$visual" = true ]; then
+        echo -e "${GREEN}HEADS${RESET}"
+      else
+        echo "HEADS"
+      fi
+    fi
+  else
+    ((tails++))
+    if [ "$mode" = "normal" ]; then
+      if [ "$visual" = true ]; then
+        echo -e "${RED}TAILS${RESET}"
+      else
+        echo "TAILS"
+      fi
+    fi
+  fi
+
+  # Show progress bar only if visual is true
+  if [ "$visual" = true ]; then
+      progress_bar $i $num
+  fi
+done
+
+# ---------------- COUNT MODE ----------------
+if [ "$mode" = "count" ]; then
+  if [ "$visual" = true ]; then
+    echo -e "\n${YELLOW}Results after $num tosses:${RESET}"
+    echo -e "${GREEN}Heads: $heads${RESET}"
+    echo -e "${RED}Tails: $tails${RESET}"
+  else
+    echo -e "\nResults after $num tosses:"
+    echo "Heads: $heads"
+    echo "Tails: $tails"
+  fi
+fi
+

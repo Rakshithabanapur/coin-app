@@ -1,0 +1,42 @@
+.TH COIN 1 "December 2025" "version 2.0" "User Commands"
+.SH NAME
+coin \- A simple coin toss tool which outputs either Heads or Tails
+
+.SH SYNOPSIS
+.B coin
+[\-n NUM] [\-c MODE] [--no-visual] [\-h]
+
+.SH DESCRIPTION
+.B coin
+A simple command-line utility that simulates a coin toss. It prints "HEADS" or "TAILS". Supports multiple tosses and different output modes. 
+
+.SH OPTIONS
+.TP
+\-n NUM
+Number of times to toss the coin (default: 1)
+
+.TP
+\-c MODE
+Output mode: normal (prints each toss) or count (prints totals)
+
+.TP
+--no-visual
+Disables animations and colors for minimal output
+
+.TP
+\-h
+Show help message
+
+.SH EXAMPLES
+.B coin -n 5
+Toss the coin 5 times
+
+.B coin -n 10 -c count
+Count heads/tails after 10 tosses
+
+.B coin -n 3 --no-visual
+Run 3 tosses without animation and colors
+
+.SH AUTHOR
+Rakshitha Banapur
+
